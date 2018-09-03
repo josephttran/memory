@@ -1,0 +1,12 @@
+
+#title {
+  text-align: center;
+  background-color: orange;
+}
+
+#game-canvas {
+  display: block;  
+  border: 2px solid #808;
+  padding: 0;
+  margin: auto;
+}
