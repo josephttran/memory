@@ -9,6 +9,7 @@ var GAME_START = false;
 var IN_GAME = false;
 
 const menuFont = "30px Arial";
+const playBtnFont = "30px sans serif";
 
 var NUM_COLS = 4;
 var NUM_ROWS = 4;
@@ -39,7 +40,7 @@ function triangle(ctxx, ctxFill, tri) {
   ctxx.lineTo(tri.x2, tri.y2);
   ctxx.lineTo(tri.x3, tri.y3);
   ctxx.fill();
-}
+};
 
 const columnUpTriangle = {
   x1: rowTextX + 20,
@@ -48,7 +49,8 @@ const columnUpTriangle = {
   y2: rowTextY - rowFontSize - 10,
   x3: rowTextX + 40,
   y3: rowTextY - rowFontSize
-}
+};
+
 const columnDownTriangle = {
   x1: rowTextX + 20,
   y1: rowTextY + 10,
@@ -56,7 +58,8 @@ const columnDownTriangle = {
   y2: rowTextY + 20,
   x3: rowTextX + 40,
   y3: rowTextY + 10
-}
+};
+
 const rowUpTriangle = {
   x1: columnTextX + (columnFontSize * 2),
   y1: columnTextY - columnFontSize,
@@ -64,7 +67,8 @@ const rowUpTriangle = {
   y2: columnTextY - columnFontSize - 10,
   x3: columnTextX + (columnFontSize * 2 + 20),
   y3: columnTextY - columnFontSize
-}
+};
+
 const rowDownTriangle = {
   x1: columnTextX + (columnFontSize * 2),
   y1: columnTextY + 10,
@@ -72,14 +76,44 @@ const rowDownTriangle = {
   y2: columnTextY + 20,
   x3: columnTextX + (columnFontSize * 2 + 20),
   y3: columnTextY + 10
-}
-const playButton = {
-  x: 20,
-  y: 350,
-  width: 100,
-  height: 50 
+};
+
+/* function draw rectangle with x, y as center */
+function fillRectCentered(context, x, y, width, height) {
+  context.fillRect(x - width / 2, y - height / 2, width, height);
 }
 
+/* Button Object */  
+function SquareButton(obj) {
+  this.x = obj.x;
+  this.y = obj.y;
+  this.height = obj.height;
+  this.width = obj.width;
+}
+
+SquareButton.prototype.draw = function() {
+  let mouse = getMousePos();
+
+  ctx.fillStyle = '#0fd';
+  fillRectCentered(ctx, this.x, this.y, this.width, this.height);
+
+
+  if(MENU){
+    ctx.fillStyle = '#000';
+    ctx.font = playBtnFont;
+    ctx.fillText("PLAY", this.x, this.y); 
+  }
+}
+
+
+const playButton = {
+  x: ctx.canvas.width / 2,
+  y: ctx.canvas.height * 3/4,
+  width: 100,
+  height: 50 
+};
+
+var playBtn = new SquareButton(playButton);
 
 /* Draw menu screen and play button */
 function loadMenu(){
@@ -103,5 +137,7 @@ function loadMenu(){
   ctx.font = columnFont;
   ctx.fillText("Columns:  " + NUM_COLS, columnTextX, columnTextY);
   triangle(ctx, '#f0f', columnUpTriangle);
-  triangle(ctx, '#f0f', columnDownTriangle); 
+  triangle(ctx, '#f0f', columnDownTriangle);
+
+  playBtn.draw();  
 }
