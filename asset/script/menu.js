@@ -27,31 +27,32 @@ const playBtnY = ctx.canvas.height * 3/4;
 
 /* Get mouse position */
 function getMousePos() {
-  return{
-       x: event.clientX - ctx.canvas.offsetLeft + pageXOffset,
-       y: event.clientY - ctx.canvas.offsetTop + pageYOffset
+  return {
+    x: event.clientX - ctx.canvas.offsetLeft + pageXOffset,
+    y: event.clientY - ctx.canvas.offsetTop + pageYOffset
   };
-};
+}
 
 /* Write mouse position */
-canvas.addEventListener('mousemove', (e) => {
+canvas.addEventListener('mousemove', () => {
   var mousePos = getMousePos();   
   var mPos = document.getElementById("mouse-coord");
+
   mPos.innerHTML = "Mouse Coordinate: (" + mousePos.x +", "+ mousePos.y +")";
  
-  if(MENU === true){
+  if (MENU === true) {
     playBtn.draw();
   }
-});
+})
 
 /* Load game if play button is clicked */
-canvas.addEventListener('click', function(){
-  if(MENU === true && playBtn.isMouseOnButton()){
+canvas.addEventListener('click', () => {
+  if (MENU === true && playBtn.isMouseOnButton()) {
     MENU = false; 
     GAME_START = true;       
     drawGame();     
   }
-});
+})
 
 /** 
  * Function draw triangle on canvas
@@ -64,7 +65,7 @@ function triangle(ctxx, ctxFill, tri) {
   ctxx.lineTo(tri.x2, tri.y2);
   ctxx.lineTo(tri.x3, tri.y3);
   ctxx.fill();
-};
+}
 
 const columnUpTriangle = {
   x1: rowTextX + 20,
@@ -133,13 +134,12 @@ SquareButton.prototype.draw = function() {
 
   fillRectCentered(ctx, this.x, this.y, this.width, this.height);
 
-  if(MENU){
+  if (MENU) {
     ctx.fillStyle = '#000';
     ctx.font = playBtnFont;
     ctx.fillText("PLAY", this.x, this.y); 
   }
 }
-
 
 const playButton = {
   x: playBtnX,
@@ -151,7 +151,7 @@ const playButton = {
 var playBtn = new SquareButton(playButton);
 
 /* Draw menu screen and play button */
-function loadMenu(){
+function loadMenu() {
  
   ctx.fillStyle = '#00853f';
   ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
@@ -176,5 +176,3 @@ function loadMenu(){
 
   playBtn.draw();  
 }
-
-console.log('a0')
