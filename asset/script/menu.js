@@ -22,16 +22,40 @@ const columnFont = columnFontSize + "px Arial";
 const columnTextX = canvas.width/3*2;
 const columnTextY = rowTextY;
 
+const playBtnX = ctx.canvas.width / 2;
+const playBtnY = ctx.canvas.height * 3/4;
+
 /* Get mouse position */
-function getMousePos(){
+function getMousePos() {
   return{
        x: event.clientX - ctx.canvas.offsetLeft + pageXOffset,
        y: event.clientY - ctx.canvas.offsetTop + pageYOffset
   };
 };
 
-/* @param: canvas, color, triangle object position
- *function draw triangle on canvas 
+/* Write mouse position */
+canvas.addEventListener('mousemove', (e) => {
+  var mousePos = getMousePos();   
+  var mPos = document.getElementById("mouse-coord");
+  mPos.innerHTML = "Mouse Coordinate: (" + mousePos.x +", "+ mousePos.y +")";
+ 
+  if(MENU === true){
+    playBtn.draw();
+  }
+});
+
+/* Load game if play button is clicked */
+canvas.addEventListener('click', function(){
+  if(MENU === true && playBtn.isMouseOnButton()){
+    MENU = false; 
+    GAME_START = true;       
+    drawGame();     
+  }
+});
+
+/** 
+ * Function draw triangle on canvas
+ * @param: canvas, color, triangle object position
  */
 function triangle(ctxx, ctxFill, tri) {
   ctxx.fillStyle = ctxFill;
@@ -91,12 +115,23 @@ function SquareButton(obj) {
   this.width = obj.width;
 }
 
+SquareButton.prototype.isMouseOnButton = function() {
+  var mousePos = getMousePos();
+  
+  return (mousePos.x > this.x - this.width/2
+    && mousePos.x < this.x + this.width/2 
+    && mousePos.y > this.y - this.height/2
+    && mousePos.y < this.y + this.height/2);
+}
+
 SquareButton.prototype.draw = function() {
-  let mouse = getMousePos();
+  ctx.fillStyle = '#ff07ff';
 
-  ctx.fillStyle = '#0fd';
+  if (MENU && this.isMouseOnButton()) {
+    ctx.fillStyle = '#0fd';
+  }
+
   fillRectCentered(ctx, this.x, this.y, this.width, this.height);
-
 
   if(MENU){
     ctx.fillStyle = '#000';
@@ -107,8 +142,8 @@ SquareButton.prototype.draw = function() {
 
 
 const playButton = {
-  x: ctx.canvas.width / 2,
-  y: ctx.canvas.height * 3/4,
+  x: playBtnX,
+  y: playBtnY,
   width: 100,
   height: 50 
 };
@@ -118,7 +153,7 @@ var playBtn = new SquareButton(playButton);
 /* Draw menu screen and play button */
 function loadMenu(){
  
-  ctx.fillStyle = '#00853F';
+  ctx.fillStyle = '#00853f';
   ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
   ctx.drawImage(imgBackground, 0, 0, ctx.canvas.width, ctx.canvas.height); 
 
@@ -141,3 +176,5 @@ function loadMenu(){
 
   playBtn.draw();  
 }
+
+console.log('a0')
