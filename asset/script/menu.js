@@ -1,18 +1,18 @@
 const canvas = document.getElementById('game-canvas');
 const ctx = canvas.getContext('2d');
 
-var imgBackground = new Image();
+const imgBackground = new Image();
 imgBackground.src = "asset/img/background.jpg";
 
 var MENU = true;
 var GAME_START = false;
 var IN_GAME = false;
 
-const menuFont = "30px Arial";
-const playBtnFont = "30px sans serif";
+var menuFont = "30px Arial";
+var playBtnFont = "30px sans serif";
 
-var NUM_COLS = 4;
-var NUM_ROWS = 4;
+var numColumn = 4;
+var numRows = 4;
 const rowFontSize = 20;
 const rowFont = rowFontSize + "px Arial";
 const rowTextX = canvas.width/4;
@@ -32,27 +32,6 @@ function getMousePos() {
     y: event.clientY - ctx.canvas.offsetTop + pageYOffset
   };
 }
-
-/* Write mouse position */
-canvas.addEventListener('mousemove', () => {
-  var mousePos = getMousePos();   
-  var mPos = document.getElementById("mouse-coord");
-
-  mPos.innerHTML = "Mouse Coordinate: (" + mousePos.x +", "+ mousePos.y +")";
- 
-  if (MENU === true) {
-    playBtn.draw();
-  }
-})
-
-/* Load game if play button is clicked */
-canvas.addEventListener('click', () => {
-  if (MENU === true && playBtn.isMouseOnButton()) {
-    MENU = false; 
-    GAME_START = true;       
-    drawGame();     
-  }
-})
 
 /** 
  * Function draw triangle on canvas
@@ -117,7 +96,7 @@ function SquareButton(obj) {
 }
 
 SquareButton.prototype.isMouseOnButton = function() {
-  var mousePos = getMousePos();
+  let mousePos = getMousePos();
   
   return (mousePos.x > this.x - this.width/2
     && mousePos.x < this.x + this.width/2 
@@ -148,7 +127,7 @@ const playButton = {
   height: 50 
 };
 
-var playBtn = new SquareButton(playButton);
+const playBtn = new SquareButton(playButton);
 
 /* Draw menu screen and play button */
 function loadMenu() {
@@ -164,15 +143,37 @@ function loadMenu() {
 
   ctx.fillStyle = '#ff0';
   ctx.font = rowFont;
-  ctx.fillText("Rows:  " + NUM_ROWS, rowTextX, rowTextY);
+  ctx.fillText("Rows:  " + numRows, rowTextX, rowTextY);
   triangle(ctx, '#f0f', rowUpTriangle);
   triangle(ctx, '#f0f', rowDownTriangle);
 
   ctx.fillStyle = '#ff0';    
   ctx.font = columnFont;
-  ctx.fillText("Columns:  " + NUM_COLS, columnTextX, columnTextY);
+  ctx.fillText("Columns:  " + numColumn, columnTextX, columnTextY);
   triangle(ctx, '#f0f', columnUpTriangle);
   triangle(ctx, '#f0f', columnDownTriangle);
 
   playBtn.draw();  
 }
+
+/* Write mouse position */
+canvas.addEventListener('mousemove', () => {
+  let mousePos = getMousePos();   
+  let mPos = document.getElementById("mouse-coord");
+
+  mPos.innerHTML = "Mouse Coordinate: (" + mousePos.x +", "+ mousePos.y +")";
+ 
+  if (MENU === true) {
+    playBtn.draw();
+  }
+})
+
+/* Load game if play button is clicked */
+canvas.addEventListener('click', () => {
+  if (MENU === true && playBtn.isMouseOnButton()) {      
+    GAME_START = true;
+    IN_GAME = true;      
+    MENU = false;     
+    drawGame();   
+  }
+})
