@@ -11,8 +11,11 @@ var IN_GAME = false;
 var menuFont = "30px Arial";
 var playBtnFont = "30px sans serif";
 
-var numColumn = 4;
-var numRows = 4;
+const btnColor = '#0ff';
+const btnColorHover = '#07f';
+
+let NUM_COLS = 4;
+let NUM_ROWS = 4;
 const rowFontSize = 20;
 const rowFont = rowFontSize + "px Arial";
 const rowTextX = canvas.width/4;
@@ -33,61 +36,47 @@ function getMousePos() {
   };
 }
 
-/** 
- * Function draw triangle on canvas
- * @param: canvas, color, triangle object position
- */
-function triangle(ctxx, ctxFill, tri) {
-  ctxx.fillStyle = ctxFill;
-  ctxx.beginPath();
-  ctxx.moveTo(tri.x1, tri.y1);
-  ctxx.lineTo(tri.x2, tri.y2);
-  ctxx.lineTo(tri.x3, tri.y3);
-  ctxx.fill();
+/* Triangle Object */
+function Triangle(tri) {
+  this.x1 = tri.x1;
+  this.y1 = tri.y1;
+  this.x2 = tri.x2;
+  this.y2 = tri.y2;
+  this.x3 = tri.x3;
+  this.y3 = tri.y3;
 }
 
-const columnUpTriangle = {
-  x1: rowTextX + 20,
-  y1: rowTextY - rowFontSize,
-  x2: rowTextX + 30,
-  y2: rowTextY - rowFontSize - 10,
-  x3: rowTextX + 40,
-  y3: rowTextY - rowFontSize
-};
+Triangle.prototype.isMouseOnButton = function() {
+  let mousePos = getMousePos();
 
-const columnDownTriangle = {
-  x1: rowTextX + 20,
-  y1: rowTextY + 10,
-  x2: rowTextX + 30,
-  y2: rowTextY + 20,
-  x3: rowTextX + 40,
-  y3: rowTextY + 10
-};
+  return (mousePos.x > this.x1 
+      && mousePos.x < this.x3
+      && ((this.y2 < this.y3) 
+        ? mousePos.y > this.y2 && mousePos.y < this.y3 
+        : mousePos.y < this.y2 && mousePos.y > this.y3)
+  );
+}
 
-const rowUpTriangle = {
-  x1: columnTextX + (columnFontSize * 2),
-  y1: columnTextY - columnFontSize,
-  x2: columnTextX + (columnFontSize * 2 + 10),
-  y2: columnTextY - columnFontSize - 10,
-  x3: columnTextX + (columnFontSize * 2 + 20),
-  y3: columnTextY - columnFontSize
-};
+Triangle.prototype.draw = function(ctxx) {
+  ctxx.fillStyle = btnColor; 
 
-const rowDownTriangle = {
-  x1: columnTextX + (columnFontSize * 2),
-  y1: columnTextY + 10,
-  x2: columnTextX + (columnFontSize * 2 + 10),
-  y2: columnTextY + 20,
-  x3: columnTextX + (columnFontSize * 2 + 20),
-  y3: columnTextY + 10
-};
+  if (MENU && this.isMouseOnButton()) {
+    ctxx.fillStyle = btnColorHover;    
+  } 
+
+  ctxx.beginPath();
+  ctxx.moveTo(this.x1, this.y1);
+  ctxx.lineTo(this.x2, this.y2);
+  ctxx.lineTo(this.x3, this.y3);
+  ctxx.fill();
+}
 
 /* function draw rectangle with x, y as center */
 function fillRectCentered(context, x, y, width, height) {
   context.fillRect(x - width / 2, y - height / 2, width, height);
 }
 
-/* Button Object */  
+/* Square Button Object */  
 function SquareButton(obj) {
   this.x = obj.x;
   this.y = obj.y;
@@ -101,14 +90,15 @@ SquareButton.prototype.isMouseOnButton = function() {
   return (mousePos.x > this.x - this.width/2
     && mousePos.x < this.x + this.width/2 
     && mousePos.y > this.y - this.height/2
-    && mousePos.y < this.y + this.height/2);
+    && mousePos.y < this.y + this.height/2
+  );
 }
 
 SquareButton.prototype.draw = function() {
-  ctx.fillStyle = '#ff07ff';
+  ctx.fillStyle = btnColor;
 
   if (MENU && this.isMouseOnButton()) {
-    ctx.fillStyle = '#0fd';
+    ctx.fillStyle = btnColorHover;
   }
 
   fillRectCentered(ctx, this.x, this.y, this.width, this.height);
@@ -120,6 +110,42 @@ SquareButton.prototype.draw = function() {
   }
 }
 
+const columnUpTriangle = {
+  x1: columnTextX + (columnFontSize * 2),
+  y1: columnTextY - columnFontSize,
+  x2: columnTextX + (columnFontSize * 2 + 10),
+  y2: columnTextY - columnFontSize - 10,
+  x3: columnTextX + (columnFontSize * 2 + 20),
+  y3: columnTextY - columnFontSize
+};
+
+const columnDownTriangle = {
+  x1: columnTextX + (columnFontSize * 2),
+  y1: columnTextY + 10,
+  x2: columnTextX + (columnFontSize * 2 + 10),
+  y2: columnTextY + 20,
+  x3: columnTextX + (columnFontSize * 2 + 20),
+  y3: columnTextY + 10
+};
+
+const rowUpTriangle = {
+  x1: rowTextX + 20,
+  y1: rowTextY - rowFontSize,
+  x2: rowTextX + 30,
+  y2: rowTextY - rowFontSize - 10,
+  x3: rowTextX + 40,
+  y3: rowTextY - rowFontSize
+};
+
+const rowDownTriangle = {
+  x1: rowTextX + 20,
+  y1: rowTextY + 10,
+  x2: rowTextX + 30,
+  y2: rowTextY + 20,
+  x3: rowTextX + 40,
+  y3: rowTextY + 10
+};
+
 const playButton = {
   x: playBtnX,
   y: playBtnY,
@@ -127,11 +153,14 @@ const playButton = {
   height: 50 
 };
 
+const columnUpBtn = new Triangle(columnUpTriangle);
+const columnDownBtn = new Triangle(columnDownTriangle);
+const rowUpBtn = new Triangle(rowUpTriangle);
+const rowDownBtn = new Triangle(rowDownTriangle);
 const playBtn = new SquareButton(playButton);
 
-/* Draw menu screen and play button */
+/* Draw menu screen with buttons */
 function loadMenu() {
- 
   ctx.fillStyle = '#00853f';
   ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
   ctx.drawImage(imgBackground, 0, 0, ctx.canvas.width, ctx.canvas.height); 
@@ -143,15 +172,15 @@ function loadMenu() {
 
   ctx.fillStyle = '#ff0';
   ctx.font = rowFont;
-  ctx.fillText("Rows:  " + numRows, rowTextX, rowTextY);
-  triangle(ctx, '#f0f', rowUpTriangle);
-  triangle(ctx, '#f0f', rowDownTriangle);
+  ctx.fillText("Rows:  " + NUM_ROWS, rowTextX, rowTextY);
+  rowUpBtn.draw(ctx);
+  rowDownBtn.draw(ctx);
 
-  ctx.fillStyle = '#ff0';    
+  ctx.fillStyle = '#ff0';
   ctx.font = columnFont;
-  ctx.fillText("Columns:  " + numColumn, columnTextX, columnTextY);
-  triangle(ctx, '#f0f', columnUpTriangle);
-  triangle(ctx, '#f0f', columnDownTriangle);
+  ctx.fillText("Columns:  " + NUM_COLS, columnTextX, columnTextY);
+  columnUpBtn.draw(ctx);  
+  columnDownBtn.draw(ctx);
 
   playBtn.draw();  
 }
@@ -164,16 +193,48 @@ canvas.addEventListener('mousemove', () => {
   mPos.innerHTML = "Mouse Coordinate: (" + mousePos.x +", "+ mousePos.y +")";
  
   if (MENU === true) {
+    rowUpBtn.draw(ctx);
+    rowDownBtn.draw(ctx);    
+    columnUpBtn.draw(ctx);  
+    columnDownBtn.draw(ctx);  
     playBtn.draw();
   }
 })
 
-/* Load game if play button is clicked */
+/* Click Event
+ * Adjust row and column
+ * Load game when play button is clicked if number of cards set is even
+ */
 canvas.addEventListener('click', () => {
-  if (MENU === true && playBtn.isMouseOnButton()) {      
-    GAME_START = true;
-    IN_GAME = true;      
-    MENU = false;     
-    drawGame();   
+  if (MENU === true ) {
+    if (columnUpBtn.isMouseOnButton()) {
+      NUM_COLS++;
+      loadMenu();
+    }
+    if (columnDownBtn.isMouseOnButton() && NUM_COLS > 1) {
+      NUM_COLS--;
+      loadMenu();
+    }
+    if (rowUpBtn.isMouseOnButton()) {
+      NUM_ROWS++;
+      loadMenu();
+    }
+    if (rowDownBtn.isMouseOnButton() && NUM_ROWS > 1) {
+      NUM_ROWS--;
+      loadMenu();
+    }
+  }
+
+  if (MENU === true  &&  playBtn.isMouseOnButton()) { 
+    if (NUM_COLS * NUM_ROWS % 2 !== 0) {
+      alert("Total cards is not even. Adjust number of rows or columns.");
+    }
+
+    if (NUM_COLS * NUM_ROWS % 2 === 0) {
+      GAME_START = true;
+      IN_GAME = true;      
+      MENU = false;     
+      drawGame();           
+    }
   }
 })
