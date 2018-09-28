@@ -1,8 +1,6 @@
-var cardWidth = canvas.width / numColumn;
-var cardHeight = canvas.height / numRows;
-
 let cards = [];
 let numTries = 0;
+
 const END_FONT = "30px Arial";
 
 //Back of card 
@@ -18,6 +16,13 @@ const face5 = new Image();
 const face6 = new Image();
 const face7 = new Image();
 const face8 = new Image();
+const face9 = new Image();
+const face10 = new Image();
+const face11 = new Image();
+const face12 = new Image();
+const face13 = new Image();
+const face14 = new Image();
+const face15 = new Image();
 face1.src = "asset/img/anchors.jpg"; 
 face2.src = "asset/img/birdcage.jpg";
 face3.src = "asset/img/boat.jpg";
@@ -26,7 +31,15 @@ face5.src = "asset/img/fortress.jpg";
 face6.src = "asset/img/secretcave.jpg";
 face7.src = "asset/img/trafalgar.jpg";
 face8.src = "asset/img/waterfall.jpg";
-const faces = [face1, face2, face3, face4, face5, face6, face7, face8];
+face9.src = "asset/img/lake.jpg";
+face10.src = "asset/img/phone.jpg";
+face11.src = "asset/img/cosmic.jpg";
+face12.src = "asset/img/mountain.jpg";
+face13.src = "asset/img/pier.jpg";
+face14.src = "asset/img/stone.jpg";
+face15.src = "asset/img/water.jpg";
+const faces = [face1, face2, face3, face4, face5, face6, face7, face8, face9,
+   face10, face11, face12, face13, face14, face15];
 
 class Card {
   constructor (x, y, face, width, height) {
@@ -66,11 +79,13 @@ function shuffle(arr) {
 }
 
 function makeGame() {
-  // Make array which has 2 of each
+  let cardWidth = canvas.width / NUM_COLS;
+  let cardHeight = canvas.height / NUM_ROWS;
   let selected = [];
   let possibleFaces = [...faces];
-
-  for (let i = 0; i < numColumn * numRows / 2; i++) {
+  
+  // Make array which has 2 of each
+  for (let i = 0; i < NUM_COLS * NUM_ROWS / 2; i++) {
     let randomIndex = Math.floor(Math.random() * possibleFaces.length);
     let face = possibleFaces[randomIndex];
     // Push twice onto array
@@ -83,8 +98,8 @@ function makeGame() {
   shuffle(selected);
 
   // Create cards
-  for (let i = 0; i < numColumn; i++) {
-    for (let j = 0; j < numRows; j++) {
+  for (let i = 0; i < NUM_COLS; i++) {
+    for (let j = 0; j < NUM_ROWS; j++) {
       cards.push(new Card(i * cardWidth + 5, j * cardHeight + 5, selected.pop(), cardWidth - 10, cardHeight - 10));     
     }
   }
@@ -106,6 +121,7 @@ function makeEnd() {
 }
 
 let flippedCards = [];
+
 function drawGame() {
   if (!MENU && GAME_START && IN_GAME){
     ctx.clearRect(0, 0, canvas.width, canvas.height);
