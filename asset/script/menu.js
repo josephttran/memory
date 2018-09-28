@@ -207,7 +207,7 @@ canvas.addEventListener('mousemove', () => {
  */
 canvas.addEventListener('click', () => {
   if (MENU === true ) {
-    if (columnUpBtn.isMouseOnButton()) {
+    if (columnUpBtn.isMouseOnButton() && (((NUM_COLS + 1) * NUM_ROWS <= 30) || ((NUM_COLS * (NUM_ROWS + 1) <= 30)))) {
       NUM_COLS++;
       loadMenu();
     }
@@ -215,7 +215,7 @@ canvas.addEventListener('click', () => {
       NUM_COLS--;
       loadMenu();
     }
-    if (rowUpBtn.isMouseOnButton()) {
+    if (rowUpBtn.isMouseOnButton()&& (((NUM_COLS + 1) * NUM_ROWS <= 30) || ((NUM_COLS * (NUM_ROWS + 1) <= 30)))) {
       NUM_ROWS++;
       loadMenu();
     }
