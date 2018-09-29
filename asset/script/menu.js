@@ -82,6 +82,8 @@ function SquareButton(obj) {
   this.y = obj.y;
   this.height = obj.height;
   this.width = obj.width;
+  this.text = obj.text;
+  this.btnFont = obj.font;
 }
 
 SquareButton.prototype.isMouseOnButton = function() {
@@ -97,17 +99,16 @@ SquareButton.prototype.isMouseOnButton = function() {
 SquareButton.prototype.draw = function() {
   ctx.fillStyle = btnColor;
 
-  if (MENU && this.isMouseOnButton()) {
+  if (this.isMouseOnButton()) {
     ctx.fillStyle = btnColorHover;
   }
 
   fillRectCentered(ctx, this.x, this.y, this.width, this.height);
 
-  if (MENU) {
-    ctx.fillStyle = '#000';
-    ctx.font = playBtnFont;
-    ctx.fillText("PLAY", this.x, this.y); 
-  }
+  ctx.fillStyle = '#000';
+  ctx.font = this.btnFont;
+  ctx.fillText(this.text, this.x, this.y); 
+  
 }
 
 const columnUpTriangle = {
@@ -150,7 +151,9 @@ const playButton = {
   x: playBtnX,
   y: playBtnY,
   width: 100,
-  height: 50 
+  height: 50, 
+  text: "Play",
+  font: playBtnFont
 };
 
 const columnUpBtn = new Triangle(columnUpTriangle);
@@ -161,6 +164,7 @@ const playBtn = new SquareButton(playButton);
 
 /* Draw menu screen with buttons */
 function loadMenu() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.fillStyle = '#00853f';
   ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
   ctx.drawImage(imgBackground, 0, 0, ctx.canvas.width, ctx.canvas.height); 

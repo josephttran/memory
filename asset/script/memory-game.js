@@ -1,7 +1,10 @@
 let cards = [];
 let numTries = 0;
 
-const END_FONT = "30px Arial";
+const END_FONT = "20px Arial";
+let END_SCREEN = false;
+const toMenuBtnX = ctx.canvas.width / 2;
+const toMenuBtnY = ctx.canvas.height * 2/3;
 
 //Back of card 
 const cardBack = new Image();
@@ -110,7 +113,16 @@ function makeGame() {
   }
 }
 
-function makeEnd() {
+const toMenuBtn = new SquareButton({ 
+  x: toMenuBtnX,
+  y: toMenuBtnY,
+  width: 200,
+  height: 50, 
+  text: "Go to menu screen",
+  font: END_FONT
+});
+
+function endScreen() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   ctx.fillStyle='#222';
@@ -118,6 +130,9 @@ function makeEnd() {
   ctx.fillStyle = '#fff';
   ctx.font = END_FONT;
   ctx.fillText("You found them all in " + numTries +" tries!", canvas.width / 2, canvas.height / 2); 
+
+  toMenuBtn.draw();
+  END_SCREEN = true;
 }
 
 let flippedCards = [];
@@ -177,10 +192,26 @@ canvas.addEventListener('click', () => {
 
     if (!MENU && foundAllMatches) {
       IN_GAME = false;
+
       cancelAnimationFrame(drawGame); 
-      setTimeout(makeEnd(), 1000);
+      setTimeout(endScreen(), 1000);
     }          
   }
 })
 
+canvas.addEventListener('click', () => {
+  if (END_SCREEN && toMenuBtn.isMouseOnButton()) {
+    MENU = true;
+    END_SCREEN = false;
+    cards.length = 0;
+    numTries = 0;    
+    loadMenu();    
 
+  }
+})
+
+canvas.addEventListener('mousemove', () => {
+  if (END_SCREEN === true) {
+    toMenuBtn.draw();
+  }
+})
