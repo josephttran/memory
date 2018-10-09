@@ -58,11 +58,11 @@ Triangle.prototype.isMouseOnButton = function() {
 }
 
 Triangle.prototype.draw = function(ctxx) {
-  ctxx.fillStyle = btnColor; 
+  ctxx.fillStyle = btnColor;
 
   if (MENU && this.isMouseOnButton()) {
-    ctxx.fillStyle = btnColorHover;    
-  } 
+    ctxx.fillStyle = btnColorHover;
+  }
 
   ctxx.beginPath();
   ctxx.moveTo(this.x1, this.y1);
@@ -76,7 +76,7 @@ function fillRectCentered(context, x, y, width, height) {
   context.fillRect(x - width / 2, y - height / 2, width, height);
 }
 
-/* Square Button Object */  
+/* Square Button Object */
 function SquareButton(obj) {
   this.x = obj.x;
   this.y = obj.y;
@@ -107,8 +107,8 @@ SquareButton.prototype.draw = function() {
 
   ctx.fillStyle = '#000';
   ctx.font = this.btnFont;
-  ctx.fillText(this.text, this.x, this.y); 
-  
+  ctx.fillText(this.text, this.x, this.y);
+
 }
 
 const columnUpTriangle = {
@@ -151,7 +151,7 @@ const playButton = {
   x: playBtnX,
   y: playBtnY,
   width: 100,
-  height: 50, 
+  height: 50,
   text: "Play",
   font: playBtnFont
 };
@@ -167,7 +167,7 @@ function loadMenu() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.fillStyle = '#00853f';
   ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-  ctx.drawImage(imgBackground, 0, 0, ctx.canvas.width, ctx.canvas.height); 
+  ctx.drawImage(imgBackground, 0, 0, ctx.canvas.width, ctx.canvas.height);
 
   ctx.fillStyle = '#fff';
   ctx.font = menuFont;
@@ -183,24 +183,24 @@ function loadMenu() {
   ctx.fillStyle = '#ff0';
   ctx.font = columnFont;
   ctx.fillText("Columns:  " + NUM_COLS, columnTextX, columnTextY);
-  columnUpBtn.draw(ctx);  
+  columnUpBtn.draw(ctx);
   columnDownBtn.draw(ctx);
 
-  playBtn.draw();  
+  playBtn.draw();
 }
 
 /* Write mouse position */
 canvas.addEventListener('mousemove', () => {
-  let mousePos = getMousePos();   
+  let mousePos = getMousePos();
   let mPos = document.getElementById("mouse-coord");
 
   mPos.innerHTML = "Mouse Coordinate: (" + mousePos.x +", "+ mousePos.y +")";
  
   if (MENU === true) {
     rowUpBtn.draw(ctx);
-    rowDownBtn.draw(ctx);    
-    columnUpBtn.draw(ctx);  
-    columnDownBtn.draw(ctx);  
+    rowDownBtn.draw(ctx);
+    columnUpBtn.draw(ctx);
+    columnDownBtn.draw(ctx);
     playBtn.draw();
   }
 })
@@ -229,16 +229,16 @@ canvas.addEventListener('click', () => {
     }
   }
 
-  if (MENU === true  &&  playBtn.isMouseOnButton()) { 
+  if (MENU === true  &&  playBtn.isMouseOnButton()) {
     if (NUM_COLS * NUM_ROWS % 2 !== 0) {
       alert("Total cards is not even. Adjust number of rows or columns.");
     }
 
     if (NUM_COLS * NUM_ROWS % 2 === 0) {
       GAME_START = true;
-      IN_GAME = true;      
-      MENU = false;     
-      drawGame();           
+      IN_GAME = true;
+      MENU = false;
+      drawGame();
     }
   }
 })

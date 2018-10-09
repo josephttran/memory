@@ -6,9 +6,9 @@ let END_SCREEN = false;
 const toMenuBtnX = ctx.canvas.width / 2;
 const toMenuBtnY = ctx.canvas.height * 2/3;
 
-//Back of card 
+//Back of card
 const cardBack = new Image();
-cardBack.src = "asset/img/back.jpg"; 
+cardBack.src = "asset/img/back.jpg";
 
 //Declare an array with all possible faces
 const face1 = new Image();
@@ -26,7 +26,7 @@ const face12 = new Image();
 const face13 = new Image();
 const face14 = new Image();
 const face15 = new Image();
-face1.src = "asset/img/anchors.jpg"; 
+face1.src = "asset/img/anchors.jpg";
 face2.src = "asset/img/birdcage.jpg";
 face3.src = "asset/img/boat.jpg";
 face4.src = "asset/img/rainbow.jpg";
@@ -42,21 +42,21 @@ face13.src = "asset/img/pier.jpg";
 face14.src = "asset/img/stone.jpg";
 face15.src = "asset/img/water.jpg";
 const faces = [face1, face2, face3, face4, face5, face6, face7, face8, face9,
-   face10, face11, face12, face13, face14, face15];
+    face10, face11, face12, face13, face14, face15];
 
 class Card {
   constructor (x, y, face, width, height) {
     this.x = x;
     this.y = y;
     this.face = face;
-    this.width = width;    
+    this.width = width;
     this.height = height;
   }
 
-  isUnderMouse(mousePos) { 
+  isUnderMouse(mousePos) {
     return (
       mousePos.x >= this.x && mousePos.x <= this.x + this.width 
-      && mousePos.y >= this.y && mousePos.y <= this.y + this.height  
+      && mousePos.y >= this.y && mousePos.y <= this.y + this.height
     )
   }
 
@@ -109,15 +109,15 @@ function makeGame() {
 
   // Draw them face down
   for (let i = 0; i < cards.length; i++) {
-    cards[i].drawFaceDown(); 
+    cards[i].drawFaceDown();
   }
 }
 
-const toMenuBtn = new SquareButton({ 
+const toMenuBtn = new SquareButton({
   x: toMenuBtnX,
   y: toMenuBtnY,
   width: 200,
-  height: 50, 
+  height: 50,
   text: "Go to menu screen",
   font: END_FONT
 });
@@ -129,7 +129,7 @@ function endScreen() {
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   ctx.fillStyle = '#fff';
   ctx.font = END_FONT;
-  ctx.fillText("You found them all in " + numTries +" tries!", canvas.width / 2, canvas.height / 2); 
+  ctx.fillText("You found them all in " + numTries +" tries!", canvas.width / 2, canvas.height / 2);
 
   toMenuBtn.draw();
   END_SCREEN = true;
@@ -141,9 +141,10 @@ function drawGame() {
   if (!MENU && GAME_START && IN_GAME){
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle='#77effc';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);    
-    GAME_START = false;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
     makeGame();
+    canvas.addEventListener('click', cardClicked);
+    GAME_START = false;
   }
 
   if (!GAME_START && IN_GAME){
@@ -156,16 +157,18 @@ function drawGame() {
     }
     flippedCards = [];
   }
-
-  setTimeout(function() {
-    cancelAnimationFrame(drawGame)  
-  }, 1000);  
+  
+  setTimeout(() => cancelAnimationFrame(drawGame), 500);
 }
 
-canvas.addEventListener('click', () => {
-  let mousePos = getMousePos(); 
-
+/* Function for the game click eventlistener
+ * This function is added to event listener in the drawGame function when the game first start
+ * This function is removed from event listener when the game is over
+ */
+function cardClicked() {
   if (!MENU && IN_GAME && !GAME_START){
+    let mousePos = getMousePos(); 
+
     for (let i = 0; i < cards.length; i++) {
       if (cards[i].isUnderMouse(mousePos)) {
         if (flippedCards.length < 2 && !cards[i].isFaceUp) {
@@ -177,11 +180,9 @@ canvas.addEventListener('click', () => {
               flippedCards[0].isMatch = true;
               flippedCards[1].isMatch = true;
             }
-            setTimeout(function() {
-              requestAnimationFrame(drawGame);                
-            }, 1000);
+            setTimeout(() => requestAnimationFrame(drawGame), 500);
           }
-        } 
+        }
       }
     }
 
@@ -192,21 +193,20 @@ canvas.addEventListener('click', () => {
 
     if (!MENU && foundAllMatches) {
       IN_GAME = false;
-
-      cancelAnimationFrame(drawGame); 
+      cancelAnimationFrame(drawGame);
+      canvas.removeEventListener('click', cardClicked);
       setTimeout(endScreen(), 1000);
-    }          
+    }
   }
-})
+}
 
 canvas.addEventListener('click', () => {
   if (END_SCREEN && toMenuBtn.isMouseOnButton()) {
     MENU = true;
     END_SCREEN = false;
     cards.length = 0;
-    numTries = 0;    
-    loadMenu();    
-
+    numTries = 0;
+    loadMenu();
   }
 })
 
